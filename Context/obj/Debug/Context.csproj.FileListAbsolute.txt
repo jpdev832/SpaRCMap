@@ -1,0 +1,10 @@
+C:\Users\Joel\Documents\school\Project\code\Context\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Joel\Documents\school\Project\code\Context\bin\Debug\Context.dll
+C:\Users\Joel\Documents\school\Project\code\Context\bin\Debug\Context.pdb
+C:\Users\Joel\Documents\school\Project\code\Context\obj\Debug\Context.dll
+C:\Users\Joel\Documents\school\Project\code\Context\obj\Debug\Context.pdb
+C:\Users\Joel\SpaRCMap\Context\bin\Debug\Context.dll
+C:\Users\Joel\SpaRCMap\Context\bin\Debug\Context.pdb
+C:\Users\Joel\SpaRCMap\Context\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Joel\SpaRCMap\Context\obj\Debug\Context.dll
+C:\Users\Joel\SpaRCMap\Context\obj\Debug\Context.pdb

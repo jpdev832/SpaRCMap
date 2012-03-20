@@ -1,0 +1,13 @@
+C:\Users\Joel\SpaRCMap\SpaRCMap\bin\Debug\SpaRCMap.exe
+C:\Users\Joel\SpaRCMap\SpaRCMap\bin\Debug\SpaRCMap.pdb
+C:\Users\Joel\SpaRCMap\SpaRCMap\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Joel\SpaRCMap\SpaRCMap\obj\x86\Debug\MainWindow.baml
+C:\Users\Joel\SpaRCMap\SpaRCMap\obj\x86\Debug\MainWindow.g.cs
+C:\Users\Joel\SpaRCMap\SpaRCMap\obj\x86\Debug\App.g.cs
+C:\Users\Joel\SpaRCMap\SpaRCMap\obj\x86\Debug\SpaRCMap_MarkupCompile.cache
+C:\Users\Joel\SpaRCMap\SpaRCMap\obj\x86\Debug\SpaRCMap.g.resources
+C:\Users\Joel\SpaRCMap\SpaRCMap\obj\x86\Debug\SpaRCMap.Properties.Resources.resources
+C:\Users\Joel\SpaRCMap\SpaRCMap\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\Joel\SpaRCMap\SpaRCMap\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\Joel\SpaRCMap\SpaRCMap\obj\x86\Debug\SpaRCMap.exe
+C:\Users\Joel\SpaRCMap\SpaRCMap\obj\x86\Debug\SpaRCMap.pdb
