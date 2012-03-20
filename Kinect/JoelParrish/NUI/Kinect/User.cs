@@ -26,6 +26,7 @@ namespace JoelParrish.NUI.Kinect
         public BitmapSource face;
 
         public bool recognized = false;
+        public DateTime lastUpdate { get; private set; }
 
         //ensure all users are recognizing against same 
         //recognition engine
@@ -36,16 +37,10 @@ namespace JoelParrish.NUI.Kinect
             this.uid = uid;
 
             if (faceRecog == null)
-            {
-                try
-                {
-                    faceRecog = faceRecognizer;
-                }
-                catch (Exception e)
-                {
-                    throw new Exception("Could not initialize face recognition! Please ensure cascade file exist.");
-                }
-            }
+                throw new Exception("Could not initialize face recognition! No recognizer supplied");
+                    
+            faceRecog = faceRecognizer;
+            lastUpdate = DateTime.Now;
         }
 
         public void updateSkeleton(SkeletonData data, int frameNumber)
@@ -60,6 +55,7 @@ namespace JoelParrish.NUI.Kinect
             }
 
             contextAnalysis();
+            lastUpdate = DateTime.Now;
         }
 
         public void updateColorFrame(ImageFrame frame)

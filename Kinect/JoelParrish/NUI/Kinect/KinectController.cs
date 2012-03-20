@@ -10,15 +10,15 @@ namespace JoelParrish.NUI.Kinect
     {
         public delegate void DepthImageHandler(object sender, BitmapSource e);
         public delegate void ColorImageHandler(object sender, BitmapSource e);
-        //public delegate void UserHandler(object sender, KinectControllerEventArgs e);
-        //public delegate void CanvasHandler(object sender, KinectControllerEventArgs e);
-        //public delegate void SpeechRecognizeHandler(object sender, string recogText);
+        public delegate void UserHandler(object sender, EventArgs e); //will change to custom args
+        public delegate void SpeechRecognizeHandler(object sender, string recogText);
 
         public event DepthImageHandler DepthImageReady;
         public event ColorImageHandler ColorImageReady;
-        //public event UserHandler UsersDetected;
-        //public event CanvasHandler CanvasReady;
-        //public event SpeechRecognizeHandler SpeechRecognized;
+        public event UserHandler UserRemoved;
+        public event UserHandler UserDetected;
+        public event UserHandler UserRecognized;
+        public event SpeechRecognizeHandler SpeechRecognized;
 
         public enum DeviceAngle
         {
@@ -28,18 +28,21 @@ namespace JoelParrish.NUI.Kinect
 
         private static KinectController controller;
         private Camera camera;
-        private IFaceRecognition faceRecog;
         private UserManager userManager;
 
         internal Runtime nui;
         protected KinectOptions options;
 
-        protected KinectController() { }
+        protected KinectController(KinectOptions options)
+        {
+            this.options = options;
+            initialize();
+        }
 
-        public static KinectController getInstance()
+        public static KinectController getInstance(KinectOptions options)
         {
             if (controller == null)
-                controller = new KinectController();
+                controller = new KinectController(options);
 
             return controller;
         }
@@ -57,7 +60,7 @@ namespace JoelParrish.NUI.Kinect
         
         private void initialize()
         {
-            nui = new Runtime();
+            nui = Runtime.Kinects[0];
 
             nui.Initialize(options.getInitializeOptions());
 
@@ -93,30 +96,25 @@ namespace JoelParrish.NUI.Kinect
                 if (!typeof(IFaceRecognition).IsAssignableFrom(options.recogEngine.GetType()))
                     throw new Exception("Face recognition engine does not implement IFaceRecognition");
 
-                userManager = new UserManager(options.recogEngine);
+                userManager = new UserManager(options.recogEngine, new TimeSpan(0, 1, 0));
             }
         }
-        public void initialize(KinectOptions options)
+
+        #region static methods
+        public static KinectOptions initialize(bool enableDepth, bool enableVideo, bool enableSpecchRecog, bool enableUserRecog)
         {
-            this.options = options;
-            initialize();
-        }
-        public void initialize(bool enableDepth, bool enableVideo, bool enableSpecchRecog, bool enableUserRecog)
-        {
-            this.options = new KinectOptions()
+            return new KinectOptions()
             {
                 enableDepth = enableDepth,
                 enableVideo = enableVideo,
                 enableSpeechRecog = enableSpecchRecog,
                 enableUserRecog = enableUserRecog
             };
-
-            initialize();
         }
-        public void initialize(bool enableDepth, bool enableVideo, bool enableSpecchRecog, bool enableUserRecog, 
+        public static KinectOptions initialize(bool enableDepth, bool enableVideo, bool enableSpecchRecog, bool enableUserRecog, 
             bool enableTacking, bool enableHeadDetection, bool enableHandDetection, bool enableMotor)
         {
-            this.options = new KinectOptions()
+            return new KinectOptions()
             {
                 enableDepth = enableDepth,
                 enableVideo = enableVideo,
@@ -127,9 +125,8 @@ namespace JoelParrish.NUI.Kinect
                 enableHandDetection = enableHandDetection,
                 enableMotor = enableMotor
             };
-
-            initialize();
         }
+        #endregion
 
         void nui_DepthFrameReady(object sender, ImageFrameReadyEventArgs e)
         {
@@ -146,7 +143,7 @@ namespace JoelParrish.NUI.Kinect
                 PixelFormats.Bgr32, null, frame, image.Width * 4);
             DepthImageReady(this, bmp);
 
-            if (options.enableUserRecog)
+            if (options.enableUserRecog && userManager.hasUsers)
                 userManager.updateDepthFrame(e.ImageFrame);
         }
 
@@ -162,15 +159,15 @@ namespace JoelParrish.NUI.Kinect
             //NOTE: need to set a flag so detection only occurs when 
             //theres a hint a person is seen (skeleton) ***create a timeout {user manager can have a flag to notify of active usage}
 
-            if (options.enableUserRecog)
+            if (options.enableUserRecog && userManager.hasUsers)
                 userManager.updateColorFrame(e.ImageFrame);
         }
 
         void nui_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
-            if (options.enableUserRecog){
-                foreach (SkeletonData data in e.SkeletonFrame.Skeletons)
-                    userManager.updateSkeleton(data, e.SkeletonFrame.FrameNumber);
+            if (options.enableUserRecog)
+            {
+                userManager.updateSkeleton(e.SkeletonFrame);
             }
         }
 

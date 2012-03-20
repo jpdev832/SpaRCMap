@@ -8,16 +8,20 @@ namespace JoelParrish.NUI.Kinect
 {
     public class UserManager
     {
+        public bool hasUsers { get; private set; }
+
         private Dictionary<int, User> users;
         private ImageFrame depthFrame;
         private ImageFrame colorFrame;
-        private int thres_skele_timeout;
-
         private IFaceRecognition recogEngine;
+        private TimeSpan timeoutThres;
 
-        public UserManager(IFaceRecognition recogEngine)
+        public UserManager(IFaceRecognition recogEngine, TimeSpan timeoutThres)
         {
             this.recogEngine = recogEngine;
+            this.timeoutThres = timeoutThres;
+
+            hasUsers = false;
 
             users = new Dictionary<int, User>();
         }
@@ -32,36 +36,43 @@ namespace JoelParrish.NUI.Kinect
             colorFrame = iFrame;
         }
 
-        public void updateSkeleton(SkeletonData data, int frameNumber)
+        public void updateSkeleton(SkeletonFrame frame)
         {
-            if (!users.ContainsKey(data.TrackingID))
+            foreach (SkeletonData data in frame.Skeletons)
             {
-                User user = new User(data.TrackingID, recogEngine);
-                users.Add(data.TrackingID, user);
+                if (users.ContainsKey(data.TrackingID))
+                {
+                    User u;
+                    if (!users.TryGetValue(data.TrackingID, out u))
+                        throw new Exception("user data not found");
+
+                    u.updateColorFrame(colorFrame);
+                    u.updateDepthFrame(depthFrame);
+                    u.updateSkeleton(data, frame.FrameNumber);
+                }
+                else
+                {
+                    User user = new User(data.TrackingID, recogEngine);
+                    users.Add(data.TrackingID, user);
+
+                    user.updateColorFrame(colorFrame);
+                    user.updateDepthFrame(depthFrame);
+                    user.updateSkeleton(data, frame.FrameNumber);
+                }
             }
 
-            /**
-             * Check for all users that have passed the threshold
-             */
-
-            if (analyzeFrame(frameNumber))
+            List<int> rKeys = new List<int>();
+            foreach (KeyValuePair<int, User> user in users)
             {
-                User u;
-
-                if (!users.TryGetValue(data.TrackingID, out u))
-                    throw new Exception("user data not found");
-
-                //update user with data
-                //users only need update depth, color, and skeleton data when it pertains to them
+                if(DateTime.Now.Subtract(user.Value.lastUpdate) > timeoutThres){
+                    rKeys.Add(user.Key);
+                }
             }
-        }
 
-        public bool analyzeFrame(int frameNumber)
-        {
-            if (frameNumber == depthFrame.FrameNumber && frameNumber == colorFrame.FrameNumber)
-                return true;
-
-            return false;
+            foreach (int key in rKeys)
+            {
+                users.Remove(key);
+            }
         }
     }
 }
