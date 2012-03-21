@@ -55,6 +55,8 @@ namespace JoelParrish.NUI.Kinect
                     User user = new User(data.TrackingID, recogEngine);
                     users.Add(data.TrackingID, user);
 
+                    
+
                     user.updateColorFrame(colorFrame);
                     user.updateDepthFrame(depthFrame);
                     user.updateSkeleton(data, frame.FrameNumber);

@@ -60,9 +60,18 @@ namespace JoelParrish.NUI.FaceRecognition
 
         public event EventHandler recognized;
 
+        /// <summary>
+        /// Takes object as a string representing namespace for face.com REST API
+        /// </summary>
+        /// <param name="extras">namespace</param>
+        public void putExtras(object extras)
+        {
+            nameSpace = (string)extras;
+        }
+
         public IFaceRecognition getNewInstance()
         {
-            return new FaceRestAPIWrapper(apiKey, apiSecret, password, fb_user, fb_oauth_token);
+            return new FaceRestAPIWrapper(apiKey, apiSecret, password, fb_user, fb_oauth_token, nameSpace);
         }
 
         public void detect(BitmapSource bmp, object extra)
@@ -79,7 +88,7 @@ namespace JoelParrish.NUI.FaceRecognition
             //can generate possible ids based on area context
             List<string> uids = new List<string>();
             uids.Add("all");
-            FaceRestAPI.FaceAPI f = fra.faces_recognize(null, uids, (string)extra, null, createTempImage(bmp), null, null);
+            FaceRestAPI.FaceAPI f = fra.faces_recognize(null, uids, nameSpace, null, createTempImage(bmp), null, null);
 
             EventArgs e = new FaceRecognitionEventArgs(f);
             recognized(this, e);
