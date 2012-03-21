@@ -15,7 +15,7 @@ namespace JoelParrish.NUI.Kinect
         private ImageFrame colorFrame;
         private IFaceRecognition recogEngine;
         private TimeSpan timeoutThres;
-
+        
         public UserManager(IFaceRecognition recogEngine, TimeSpan timeoutThres)
         {
             this.recogEngine = recogEngine;

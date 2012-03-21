@@ -25,7 +25,6 @@ namespace Kinect_WPF_Test
         public MainWindow()
         {
             InitializeComponent();
-            controller = KinectController.getInstance();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -36,7 +35,7 @@ namespace Kinect_WPF_Test
                 enableTracking = true
             };
 
-            controller.initialize(options);
+            controller = KinectController.getInstance(options);
             controller.DepthImageReady += new KinectController.DepthImageHandler(controller_DepthImageReady);
         }
 

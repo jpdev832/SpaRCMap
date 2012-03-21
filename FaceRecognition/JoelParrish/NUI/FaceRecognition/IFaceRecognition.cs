@@ -10,6 +10,13 @@ namespace JoelParrish.NUI.FaceRecognition
         event EventHandler detected;
         event EventHandler recognized;
 
+        /// <summary>
+        /// Allows implementing class to generate new instances of itself 
+        /// through IFaceRecognition.
+        /// </summary>
+        /// <returns>New IFaceRecognition Instance</returns>
+        IFaceRecognition getNewInstance();
+
         void detect(BitmapSource bmp, object extra);
         void recognize(BitmapSource bmp, object extra);
     }

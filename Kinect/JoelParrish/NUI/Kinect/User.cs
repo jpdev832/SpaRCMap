@@ -28,8 +28,6 @@ namespace JoelParrish.NUI.Kinect
         public bool recognized = false;
         public DateTime lastUpdate { get; private set; }
 
-        //ensure all users are recognizing against same 
-        //recognition engine
         private static IFaceRecognition faceRecog;
 
         public User(int uid, IFaceRecognition faceRecognizer)
@@ -38,8 +36,8 @@ namespace JoelParrish.NUI.Kinect
 
             if (faceRecog == null)
                 throw new Exception("Could not initialize face recognition! No recognizer supplied");
-                    
-            faceRecog = faceRecognizer;
+
+            faceRecog = faceRecognizer.getNewInstance();
             lastUpdate = DateTime.Now;
         }
 
@@ -47,11 +45,9 @@ namespace JoelParrish.NUI.Kinect
         {
             skeletonData = data;
 
-            if (Math.Abs(skeletonFrame - colorFrame.FrameNumber) < 15)
+            if (!recognized)
             {
-                extractFace();
-                if(!recognized)
-                    recognize();
+                recognize();
             }
 
             contextAnalysis();
@@ -91,22 +87,11 @@ namespace JoelParrish.NUI.Kinect
 
         protected void recognize()
         {
-            string[] ids = null;
+            //check skeleton position to see if user is facing camera. if position is
+            //close then extract face and recognize
 
-            try
-            {
-                //ids = faceRecog.recognize(face, "ns");
-            }
-            catch (Exception e)
-            {
-                return;
-            }
-
-            if (ids != null || ids.Length > 0)
-            {
-                //run database query against first id 
-                //populate user information
-            }
+            //if(closePosition)
+            //faceRecog.recognize(faceImage, recogExtras);
         }
 
         protected void contextAnalysis()

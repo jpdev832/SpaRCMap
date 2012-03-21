@@ -9,11 +9,25 @@ namespace JoelParrish.NUI.FaceRecognition
 {
     public class FaceRestAPIWrapper : IFaceRecognition
     {
-        private FaceRestAPI fra;
         public string roamingPath;
+        public string nameSpace;
 
-        public FaceRestAPIWrapper(string apiKey, string apiSecret)
+        private FaceRestAPI fra;
+        private string apiKey;
+        private string apiSecret;
+        private string fb_user;
+        private string fb_oauth_token;
+        private string password;
+
+        public FaceRestAPIWrapper(string apiKey, string apiSecret, string nameSpace)
         {
+            this.apiKey = apiKey;
+            this.apiSecret = apiSecret;
+            this.fb_user = null;
+            this.fb_oauth_token = null;
+            this.password = null;
+            this.nameSpace = nameSpace;
+
             fra = new FaceRestAPI(apiKey, apiSecret, null, false, "json", null, null);
 
             roamingPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
@@ -22,8 +36,15 @@ namespace JoelParrish.NUI.FaceRecognition
             if (!Directory.Exists(roamingPath))
                 Directory.CreateDirectory(roamingPath);
         }
-        public FaceRestAPIWrapper(string apiKey, string apiSecret, string password, string fb_user, string fb_oauth_token)
+        public FaceRestAPIWrapper(string apiKey, string apiSecret, string password, string fb_user, string fb_oauth_token, string nameSpace)
         {
+            this.apiKey = apiKey;
+            this.apiSecret = apiSecret;
+            this.fb_user = fb_user;
+            this.fb_oauth_token = fb_oauth_token;
+            this.password = password;
+            this.nameSpace = nameSpace;
+
             fra = new FaceRestAPI(apiKey, apiSecret, password, false, "json", fb_user, fb_oauth_token);
 
             roamingPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
@@ -38,6 +59,11 @@ namespace JoelParrish.NUI.FaceRecognition
         public event EventHandler detected;
 
         public event EventHandler recognized;
+
+        public IFaceRecognition getNewInstance()
+        {
+            return new FaceRestAPIWrapper(apiKey, apiSecret, password, fb_user, fb_oauth_token);
+        }
 
         public void detect(BitmapSource bmp, object extra)
         {

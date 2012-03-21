@@ -39,6 +39,14 @@ namespace JoelParrish.NUI.Kinect
             initialize();
         }
 
+        public static KinectController getInstance()
+        {
+            if (controller == null)
+                throw new Exception("KinectController must be initialized first. "+
+                    "Use getInstance(KinectOptions option) to initialize a new instance");
+            return controller;
+        }
+
         public static KinectController getInstance(KinectOptions options)
         {
             if (controller == null)

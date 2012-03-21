@@ -17,6 +17,7 @@ namespace JoelParrish.NUI.Kinect
         public bool enableVideo { get; set; }
         public bool enableUserIndex { get; set; }
         public bool enableUserAnalysis { get; set; }
+
         public IFaceRecognition recogEngine { get; set; }
 
         public KinectOptions()
