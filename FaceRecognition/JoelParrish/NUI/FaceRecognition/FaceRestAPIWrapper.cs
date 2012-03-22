@@ -19,7 +19,7 @@ namespace JoelParrish.NUI.FaceRecognition
         private string fb_oauth_token;
         private string password;
 
-        public FaceRestAPIWrapper(string apiKey, string apiSecret, string nameSpace)
+        public FaceRestAPIWrapper(string apiKey, string apiSecret, string nameSpace, string tempFolder)
         {
             this.apiKey = apiKey;
             this.apiSecret = apiSecret;
@@ -31,12 +31,13 @@ namespace JoelParrish.NUI.FaceRecognition
             fra = new FaceRestAPI(apiKey, apiSecret, null, false, "json", null, null);
 
             roamingPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-                Path.DirectorySeparatorChar + "SpaRCMap";
+                Path.DirectorySeparatorChar + "SpaRCMap" +
+                (tempFolder == null ? "" : (Path.DirectorySeparatorChar + tempFolder));
 
             if (!Directory.Exists(roamingPath))
                 Directory.CreateDirectory(roamingPath);
         }
-        public FaceRestAPIWrapper(string apiKey, string apiSecret, string password, string fb_user, string fb_oauth_token, string nameSpace)
+        public FaceRestAPIWrapper(string apiKey, string apiSecret, string password, string fb_user, string fb_oauth_token, string nameSpace, string tempFolder)
         {
             this.apiKey = apiKey;
             this.apiSecret = apiSecret;
@@ -48,7 +49,8 @@ namespace JoelParrish.NUI.FaceRecognition
             fra = new FaceRestAPI(apiKey, apiSecret, password, false, "json", fb_user, fb_oauth_token);
 
             roamingPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-                Path.DirectorySeparatorChar + "SpaRCMap";
+                Path.DirectorySeparatorChar + "SpaRCMap" +
+                (tempFolder == null ? "" : (Path.DirectorySeparatorChar + tempFolder));
 
             if (!Directory.Exists(roamingPath))
                 Directory.CreateDirectory(roamingPath);
@@ -61,6 +63,14 @@ namespace JoelParrish.NUI.FaceRecognition
         public event EventHandler recognized;
 
         /// <summary>
+        /// Delete directory containing temporary images
+        /// </summary>
+        public void cleanup()
+        {
+            Directory.Delete(roamingPath, true);
+        }
+
+        /// <summary>
         /// Takes object as a string representing namespace for face.com REST API
         /// </summary>
         /// <param name="extras">namespace</param>
@@ -69,9 +79,9 @@ namespace JoelParrish.NUI.FaceRecognition
             nameSpace = (string)extras;
         }
 
-        public IFaceRecognition getNewInstance()
+        public IFaceRecognition getNewInstance(object tempFolder)
         {
-            return new FaceRestAPIWrapper(apiKey, apiSecret, password, fb_user, fb_oauth_token, nameSpace);
+            return new FaceRestAPIWrapper(apiKey, apiSecret, password, fb_user, fb_oauth_token, nameSpace, (string)tempFolder);
         }
 
         public void detect(BitmapSource bmp, object extra)

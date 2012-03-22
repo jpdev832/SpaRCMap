@@ -15,7 +15,9 @@ namespace JoelParrish.NUI.FaceRecognition
         /// through IFaceRecognition.
         /// </summary>
         /// <returns>New IFaceRecognition Instance</returns>
-        IFaceRecognition getNewInstance();
+        IFaceRecognition getNewInstance(object extra);
+
+        void cleanup();
 
         void putExtras(object extras);
         void detect(BitmapSource bmp, object extra);

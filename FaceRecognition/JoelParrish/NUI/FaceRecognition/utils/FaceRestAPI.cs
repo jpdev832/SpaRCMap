@@ -10,6 +10,10 @@
  * Note: XML Serialization not currently supported.
  *
  * v1.0.1 - add facebook auth to constrcutor
+ * 
+ * Edit: Joel Parrish
+ * Date: Friday July 10
+ * Note: added additional deserialization properties
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -542,6 +546,8 @@ namespace JoelParrish.NUI.FaceRecognition.utils
         public class Tag
         {
             public string tid { get; set; }
+
+            public bool recognizable { get; set; }
 
             public string threshold { get; set; }
 

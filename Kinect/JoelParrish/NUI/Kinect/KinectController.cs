@@ -63,6 +63,9 @@ namespace JoelParrish.NUI.Kinect
             if (nui != null)
                 nui.Uninitialize();
 
+            if(options.recogEngine != null)
+                
+
             nui = null;
         }
         
